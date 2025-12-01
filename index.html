@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 梦幻圣诞树 ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 复位按钮 */
+        .reset-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3436;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .reset-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* 飘雪效果 */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 120px;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 192, 203, 0.8);
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 192, 203, 0.8); }
+            50% { text-shadow: 0 0 40px rgba(255, 192, 203, 1); }
+        }
+
+        .tree-container {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        /* 圣诞树主体 */
+        .tree {
+            position: relative;
+            text-align: center;
+        }
+
+        .tree-star {
+            font-size: 60px;
+            cursor: pointer;
+            animation: rotate 3s linear infinite;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px gold);
+            transition: transform 0.3s;
+        }
+
+        .tree-star:hover {
+            transform: scale(1.3);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .tree-part {
+            font-size: 40px;
+            line-height: 0.8;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .tree-part:hover {
+            transform: scale(1.1);
+        }
+
+        .tree-trunk {
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        /* 装饰球 */
+        .ornament {
+            position: absolute;
+            font-size: 24px;
+            cursor: pointer;
+            animation: swing 2s ease-in-out infinite;
+            transition: transform 0.3s;
+            z-index: 10;
+        }
+
+        .ornament:hover {
+            transform: scale(1.5);
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* 礼物盒 */
+        .gifts {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .gift {
+            font-size: 50px;
+            cursor: pointer;
+            animation: bounce 1s ease-in-out infinite;
+            transition: transform 0.3s;
+        }
+
+        .gift:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 祝福语 */
+        .message {
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            min-height: 30px;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 底部按钮组 - 固定在页面底部 */
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: linear-gradient(to top, rgba(102, 126, 234, 0.95) 0%, rgba(102, 126, 234, 0.7) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+
+        button:not(.reset-button) {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:not(.reset-button):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 音乐提示 */
+        .music-note {
+            position: fixed;
+            font-size: 30px;
+            animation: float-up 2s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes float-up {
+            to {
+                transform: translateY(-200px);
+                opacity: 0;
+            }
+        }
+
+        /* 烟花效果 */
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: firework 1s ease-out forwards;
+            z-index: 1000;
+        }
+
+        @keyframes firework {
+            to {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .reset-button {
+                padding: 10px 20px;
+                font-size: 14px;
+                top: 10px;
+                right: 10px;
+            }
+            .controls {
+                padding: 15px 10px;
+                gap: 10px;
+            }
+            button:not(.reset-button) {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            .container {
+                padding-bottom: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 复位按钮 -->
+    <button class="reset-button" onclick="resetPage()">
+        🔄 复位
+    </button>
+
+    <div class="container">
+        <h1>✨ 梦幻圣诞树 ✨</h1>
+        
+        <div class="tree-container">
+            <div class="tree">
+                <div class="tree-star" onclick="clickStar()">⭐</div>
+                <div class="tree-part" onclick="changeTreeColor(this)">🌲</div>
+                <div class="tree-part" onclick="changeTreeColor(this)">🌲🌲</div>
+                <div class="tree-part" onclick="changeTreeColor(this)">🌲🌲🌲</div>
+                <div class="tree-part" onclick="changeTreeColor(this)">🌲🌲🌲🌲</div>
+                <div class="tree-trunk">🪵</div>
+            </div>
+            
+            <!-- 装饰球 -->
+            <div class="ornament" style="top: 80px; left: 50px;" onclick="clickOrnament(this)">🔴</div>
+            <div class="ornament" style="top: 120px; right: 50px;" onclick="clickOrnament(this)">🔵</div>
+            <div class="ornament" style="top: 160px; left: 40px;" onclick="clickOrnament(this)">💜</div>
+            <div class="ornament" style="top: 200px; right: 40px;" onclick="clickOrnament(this)">💛</div>
+            <div class="ornament" style="top: 140px; left: 120px;" onclick="clickOrnament(this)">💚</div>
+            <div class="ornament" style="top: 180px; right: 120px;" onclick="clickOrnament(this)">🩷</div>
+        </div>
+
+        <div class="gifts">
+            <div class="gift" onclick="openGift(this)">🎁</div>
+            <div class="gift" onclick="openGift(this)">🎁</div>
+            <div class="gift" onclick="openGift(this)">🎁</div>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <!-- 底部控制按钮 -->
+    <div class="controls">
+        <button onclick="addLights()">💡 添加彩灯</button>
+        <button onclick="playMusic()">🎵 音乐</button>
+        <button onclick="createFireworks()">🎆 放烟花</button>
+        <button onclick="addMoreSnow()">❄️ 下雪</button>
+        <button onclick="addCandy()">🍭 糖果雨</button>
+    </div>
+
+    <script>
+        // 初始化飘雪
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄️';
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            snowflake.style.opacity = Math.random();
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        // 持续飘雪
+        let snowInterval = setInterval(createSnowflake, 200);
+
+        // 复位页面功能
+        function resetPage() {
+            // 添加一个复位动画效果
+            showMessage('🔄 正在复位...');
+            
+            // 清除所有动态创建的元素
+            document.querySelectorAll('.snowflake, .music-note, .firework').forEach(el => el.remove());
+            
+            // 重置圣诞树
+            const treeParts = document.querySelectorAll('.tree-part');
+            treeParts[0].innerHTML = '🌲';
+            treeParts[1].innerHTML = '🌲🌲';
+            treeParts[2].innerHTML = '🌲🌲🌲';
+            treeParts[3].innerHTML = '🌲🌲🌲🌲';
+            
+            // 重置装饰球
+            const ornaments = document.querySelectorAll('.ornament');
+            const originalOrnaments = ['🔴', '🔵', '💜', '💛', '💚', '🩷'];
+            ornaments.forEach((ornament, index) => {
+                ornament.innerHTML = originalOrnaments[index];
+            });
+            
+            // 重置礼物
+            document.querySelectorAll('.gift').forEach(gift => {
+                gift.innerHTML = '🎁';
+            });
+            
+            // 清除所有动态添加的灯光效果
+            document.querySelectorAll('span').forEach(span => {
+                if (span.style.position === 'fixed' && span.style.animation) {
+                    span.remove();
+                }
+            });
+            
+            // 重置飘雪间隔
+            clearInterval(snowInterval);
+            snowInterval = setInterval(createSnowflake, 200);
+            
+            // 显示复位完成消息
+            setTimeout(() => {
+                showMessage('✨ 复位完成！重新开始吧！');
+            }, 500);
+        }
+
+        // 点击星星
+        function clickStar() {
+            const messages = [
+                '✨ 许愿成功！愿你梦想成真！',
+                '💫 星星祝你好运连连！',
+                '🌟 愿你每天都闪闪发光！',
+                '⭐ 你是最耀眼的小星星！'
+            ];
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+            createFireworks();
+        }
+
+        // 改变圣诞树颜色
+        function changeTreeColor(element) {
+            const trees = ['🌲', '🎄', '🌳', '💚'];
+            element.innerHTML = trees[Math.floor(Math.random() * trees.length)].repeat(element.textContent.length);
+        }
+
+        // 点击装饰球
+        function clickOrnament(element) {
+            const ornaments = ['🔴', '🔵', '💜', '💛', '💚', '🩷', '🧡', '💖', '✨', '⭐', '🌟'];
+            element.innerHTML = ornaments[Math.floor(Math.random() * ornaments.length)];
+            createMusicNote(element);
+        }
+
+        // 打开礼物
+        function openGift(element) {
+            const surprises = ['🎀', '💝', '🧸', '🍰', '🦄', '🌈', '🎈', '🌺', '🦋', '👑'];
+            const surprise = surprises[Math.floor(Math.random() * surprises.length)];
+            element.innerHTML = surprise;
+            
+            const messages = [
+                '🎉 哇！你打开了一个惊喜！',
+                '💕 这是给你的特别礼物！',
+                '🎊 恭喜你获得了小确幸！',
+                '✨ 好运降临啦！'
+            ];
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+            
+            setTimeout(() => {
+                element.innerHTML = '🎁';
+            }, 2000);
+        }
+
+        // 添加彩灯
+        function addLights() {
+            const lights = ['💡', '🔆', '✨', '💫', '⚡'];
+            for (let i = 0; i < 10; i++) {
+                const light = document.createElement('span');
+                light.innerHTML = lights[Math.floor(Math.random() * lights.length)];
+                light.style.position = 'fixed';
+                light.style.left = Math.random() * 100 + 'vw';
+                light.style.top = Math.random() * 100 + 'vh';
+                light.style.fontSize = '30px';
+                light.style.animation = 'fadeIn 0.5s, glow 1s ease-in-out infinite';
+                light.style.zIndex = '1000';
+                document.body.appendChild(light);
+
+                setTimeout(() => {
+                    light.remove();
+                }, 3000);
+            }
+            showMessage('✨ 彩灯闪闪，温馨满满！');
+        }
+
+        // 播放音乐动画
+        function playMusic() {
+            const notes = ['🎵', '🎶', '🎼', '🎤', '🎧'];
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const note = document.createElement('div');
+                    note.classList.add('music-note');
+                    note.innerHTML = notes[Math.floor(Math.random() * notes.length)];
+                    note.style.left = Math.random() * 90 + 5 + 'vw';
+                    note.style.top = Math.random() * 50 + 50 + 'vh';
+                    document.body.appendChild(note);
+
+                    setTimeout(() => {
+                        note.remove();
+                    }, 2000);
+                }, i * 100);
+            }
+            showMessage('🎵 音乐响起，快乐洋溢！');
+        }
+
+        // 创建烟花
+        function createFireworks() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff69b4'];
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight / 2;
+
+                    for (let j = 0; j < 30; j++) {
+                        const particle = document.createElement('div');
+                        particle.classList.add('firework');
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        
+                        const angle = (Math.PI * 2 * j) / 30;
+                        const velocity = 100 + Math.random() * 100;
+                        particle.style.setProperty('--x', Math.cos(angle) * velocity + 'px');
+                        particle.style.setProperty('--y', Math.sin(angle) * velocity + 'px');
+                        
+                        document.body.appendChild(particle);
+
+                        setTimeout(() => {
+                            particle.remove();
+                        }, 1000);
+                    }
+                }, i * 500);
+            }
+            showMessage('🎆 烟花绽放，美丽无限！');
+        }
+
+        // 增加下雪
+        function addMoreSnow() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createSnowflake, i * 50);
+            }
+            showMessage('❄️ 雪花飘飘，冬日浪漫！');
+        }
+
+        // 糖果雨
+        function addCandy() {
+            const candies = ['🍭', '🍬', '🍫', '🍩', '🧁', '🍰', '🍪', '🎂'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const candy = document.createElement('div');
+                    candy.classList.add('snowflake');
+                    candy.innerHTML = candies[Math.floor(Math.random() * candies.length)];
+                    candy.style.left = Math.random() * 100 + 'vw';
+                    candy.style.animationDuration = Math.random() * 2 + 1 + 's';
+                    document.body.appendChild(candy);
+
+                    setTimeout(() => {
+                        candy.remove();
+                    }, 3000);
+                }, i * 100);
+            }
+            showMessage('🍭 甜蜜降临，幸福满满！');
+        }
+
+        // 显示消息
+        function showMessage(text) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.style.animation = 'none';
+            setTimeout(() => {
+                messageEl.style.animation = 'fadeIn 1s';
+            }, 10);
+        }
+
+        // 创建音符
+        function createMusicNote(element) {
+            const rect = element.getBoundingClientRect();
+            const note = document.createElement('div');
+            note.classList.add('music-note');
+            note.innerHTML = '🎵';
+            note.style.left = rect.left + 'px';
+            note.style.top = rect.top + 'px';
+            document.body.appendChild(note);
+
+            setTimeout(() => {
+                note.remove();
+            }, 2000);
+        }
+
+        // 欢迎消息
+        setTimeout(() => {
+            showMessage('🎄 点击圣诞树和装饰球试试看！');
+        }, 500);
+    </script>
+</body>
+</html>
